@@ -1,0 +1,47 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespacestd;
+
+int main() {
+
+// initialize variables
+int files, disks;
+
+// find out number of files and their sizes
+cout << "How many files do you have?" << endl;
+cin >> files; 
+vector<int> FileSizes(files);
+cout << "Please enter the amount of storage for the " << files << " files. (in mbs)" << endl;
+for (int i = 0; i < files, ++i) {
+	cin >> FileSizes(i);
+}
+
+// find out the number of disks and their holding capacity
+cout << "How many disks do you have?" << endl;
+cin >> disks;
+vector<int> DiskCapacities(disks);
+cout << "Please enter the capacities of the " << disks << " disks. (in mbs)";
+for (int i = 0; i < disks, ++i) {
+	cin >> DiskCapacities;
+}
+
+// Starting the Greedy function
+vector<int> result = assignFilesToDisks(files, FileSizes, disks, DiskCapacities);
+
+// Printing result of the greedy function
+cout << "Here is the distribution of files to disks:" << endl;
+for (int i = 0, i < files, i++) {
+	cout << "Files " << i << " could not be transferred onto any disks." << endl;
+} else {
+	cout << "Files " ,, i << " -> Disk " << result[i] ,, endl;
+	}
+}
+
+return 0;
+
+Analysis
+
+Time Complexity for this would be O(n log n) for the sorting that is done within the loops. However when it comes to trying each file on each disk the time complexity is O(n * m), that is because the loop has to go through every file on every disk and that will grow depending on how many files and how many disks there are inputted. This gives the code an overall Time Complexity of O(n log n + n * m). The larger amount of disks or files you input will cause the time complexity to grow. Honestly, in terms of optimality I believe this will return the optimal result under the given circumstances, that is exactly what a greedy algorithm is supposed to do. With that being said, I am a firm believer that no program returns the optimal result everytime. 
+
+If we were to brute force this we would being trying to put each file on each disk, this would cause a time complexity of O(n^m) this is because of all the combinations that would need to be attempted per file. Then we add the time it takes for each file which is O(n). With the addition of this we come to a complete time complexity of O(n^m + n). In terms I believe the time complexity for the greedy approach would be better, you would not have to try every possible combination that would slow down the progress of the program.
