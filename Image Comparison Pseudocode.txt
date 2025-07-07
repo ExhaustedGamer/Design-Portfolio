@@ -1,0 +1,52 @@
+int computeDifference(vector<int>& rowX, vector<int>& rowY) {
+    int rows = rowX.size();        // Length of the row from image X
+    int columns = rowY.size();     // Length of the row from image Y
+
+    vector<vector<int>> D(rows + 1, vector<int>(columns + 1));
+
+    // Initialize base cases
+    for (int i = 0; i <= rows; i++) {
+        D[i][0] = i;
+    }
+    for (int j = 0; j <= columns; j++) {
+        D[0][j] = j;
+    }
+
+    // Fill the DP matrix
+    for (int i = 1; i <= rows; i++) {
+        for (int j = 1; j <= columns; j++) {
+            int cost = abs(rowX[i - 1] - rowY[j - 1]);
+            D[i][j] = min({
+                D[i - 1][j] + 1,         // deletion
+                D[i][j - 1] + 1,         // insertion
+                D[i - 1][j - 1] + cost   // substitution
+            });
+        }
+    }
+
+    return D[rows][columns]; // Minimum mismatch for this row
+}
+
+void compareImages(vector<vector<int>>& X, vector<vector<int>>& Y, int thresh) {
+    int numRows = X.size(); // Number of rows in the images
+    int totalDifferences = 0;
+
+    for (int i = 0; i < numRows; i++) {
+        int minVal = computeDifference(X[i], Y[i]);
+        totalDifferences += minVal;
+    }
+
+    if (totalDifferences > thresh) {
+        cout << "The images are different" << endl;
+    } else {
+        cout << "The images are similar" << endl;
+    }
+}
+
+Optimality:
+
+In order to compare images their are overlapping subproblems of insertion, deletion, and substitution. In this pseudocode we are trying to compute D[i][j], since the values for deletion, insertion and substitution are reused across multiple steps it makes this perfect for dynamic programming. This is because each step is basically a subproblem of the original and that in a nutshell is dynamic programming. The final result of whether the images are similar or different is reached by solving the subproblems and then combining. This provides the optimal solution with the least amount of time needed to achieve that solution.
+
+Time Complexity:
+
+Time complexity is based off the number of rows and columns within the image. For instance and image with 100 rows in each image but with 30 columns in image A and 40 in image B would have a time complexity of O(100x30x40) or O(120000). That would give the program a time complexity of O(I*rows*columns).
