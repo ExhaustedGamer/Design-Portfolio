@@ -1,0 +1,8 @@
+Sudoku AI Solver Analysis
+
+Sudoku is a simple yet complex puzzle game where you must fill a 9x9 board with numbers 1-9 in a certain order. Our team has developed an AI agent that is capable of solving any valid sudoku puzzle. We decided to design this AI using depth-first search that is enhanced by the minimum remaining values. It will attempt to fill empty cells with valid number, if a valid number is not present then it backtracks. Each vertex in the state space represents a partially filled sudoku board with the root of the tree being the initial board space. It then transitions between nodes by assigning a number to an empty cell.  
+ 
+Time Complexity can be complex when it comes to brute forcing any problem. To brute force a sudoku puzzle the algorithm will try every possible number in every possible cell. Given nxn for the size of the sudoku board with 9 being the standard, you also have to account for each possible number. We will us p for the possible numbers being 1-9. With these given the time complexity would be O(p^n^2). 
+ 
+
+When working with an AI the Heuristic Search is the type of search that an AI uses to solve problems. What they do is find the most efficient path from the starting point to the end goal. The Heuristic Search that was used to create this AI is the minimum remaining values, or the most constrained variable. The reason this Heuristic Search was used is because it drastically reduces the effective branching factor allowing for typical sudoku pizzles to be solved quickly.  

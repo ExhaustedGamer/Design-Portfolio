@@ -1,0 +1,125 @@
+Sudoku Pseudocode
+
+// Function to solve the Sudoku puzzle
+bool SudokuMayhem(Board& board) {
+    if (BoardFinished(board)) {
+        return true;  // Solved
+    }
+
+    Cell cell = EasiestCell(board);  // MRV heuristic
+
+    vector<int> options = ValidNumbers(cell, board);
+
+    for (int value : options) {
+        board[cell.row][cell.col] = value;
+
+        if (BoardIsComplete(board)) {
+            if (SudokuMayhem(board)) {
+                return true;  // Solution found
+            }
+        }
+
+        // Backtrack
+        board[cell.row][cell.col] = 0;
+    }
+
+    return false;  // No solution found in this path
+}
+
+// Function to select the next cell using the MRV (Minimum Remaining Values) heuristic
+Cell EasiestCell(const Board& board) {
+    int minOptions = INT_MAX;
+    Cell bestCell;
+
+    for (int row = 0; row < 9; ++row) {
+        for (int col = 0; col < 9; ++col) {
+            if (board[row][col] == 0) {
+                vector<int> options = ValidNumbers({row, col}, board);
+                if (options.size() < minOptions) {
+                    minOptions = options.size();
+                    bestCell = {row, col};
+                }
+            }
+        }
+    }
+
+    return bestCell;
+}
+
+// Returns a list of valid values for a given cell
+vector<int> ValidNumbers(const Cell& cell, const Board& board) {
+    bool used[10] = {false};  // index 1–9
+
+    // Check row and column
+    for (int i = 0; i < 9; ++i) {
+        used[board[cell.row][i]] = true;
+        used[board[i][cell.col]] = true;
+    }
+
+    // Check 3x3 subgrid
+    int boxRow = (cell.row / 3) * 3;
+    int boxCol = (cell.col / 3) * 3;
+    for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 3; ++j) {
+            used[board[boxRow + i][boxCol + j]] = true;
+        }
+    }
+
+    // Collect all unused values
+    vector<int> validValues;
+    for (int val = 1; val <= 9; ++val) {
+        if (!used[val]) {
+            validValues.push_back(val);
+        }
+    }
+
+    return validValues;
+}
+
+// Check if the board is completely filled
+bool BoardFinished(const Board& board) {
+    for (int row = 0; row < 9; ++row) {
+        for (int col = 0; col < 9; ++col) {
+            if (board[row][col] == 0) {
+                return false;
+            }
+        }
+    }
+    return BoardIsComplete(board);
+}
+
+// Check if the current board configuration is valid
+bool BoardIsComplete(const Board& board) {
+    for (int i = 0; i < 9; ++i) {
+        bool rowUsed[10] = {false};
+        bool colUsed[10] = {false};
+        bool boxUsed[10] = {false};
+
+        for (int j = 0; j < 9; ++j) {
+            int rowVal = board[i][j];
+            int colVal = board[j][i];
+
+            if (rowVal != 0 && rowUsed[rowVal]) return false;
+            if (colVal != 0 && colUsed[colVal]) return false;
+
+            rowUsed[rowVal] = rowVal != 0 ? true : rowUsed[rowVal];
+            colUsed[colVal] = colVal != 0 ? true : colUsed[colVal];
+
+            int boxRow = (i / 3) * 3 + j / 3;
+            int boxCol = (i % 3) * 3 + j % 3;
+            int boxVal = board[boxRow][boxCol];
+            if (boxVal != 0 && boxUsed[boxVal]) return false;
+            boxUsed[boxVal] = boxVal != 0 ? true : boxUsed[boxVal];
+        }
+    }
+
+    return true;
+}
+
+// Types used in pseudocode
+struct Cell {
+    int row;
+    int col;
+};
+
+typedef vector<vector<int>> Board;
